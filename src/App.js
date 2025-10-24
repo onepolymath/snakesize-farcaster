@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Trophy, RotateCcw, User, Zap } from 'lucide-react';
+import sdk from '@farcaster/frame-sdk';
 
 const WORLD_SIZE = 3000;
 const CELL_SIZE = 10;
@@ -12,7 +13,33 @@ const CANVAS_HEIGHT = 600;
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
+// Farcaster SDK Hook
+const useFarcasterContext = () => {
+  const [context, setContext] = useState(null);
+  const [isSDKLoaded, setIsSDKLoaded] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const ctx = await sdk.context;
+        setContext(ctx);
+        sdk.actions.ready();
+        setIsSDKLoaded(true);
+        console.log('Farcaster SDK loaded:', ctx);
+      } catch (error) {
+        console.log('Not running in Farcaster, using web mode');
+        setIsSDKLoaded(true);
+      }
+    };
+    load();
+  }, []);
+
+  return { context, isSDKLoaded };
+};
+
 const SnakesizeGame = () => {
+  const { context, isSDKLoaded } = useFarcasterContext();
+  
   const [gameState, setGameState] = useState('menu');
   const [playerName, setPlayerName] = useState('');
   const [snake, setSnake] = useState([]);
@@ -26,6 +53,15 @@ const SnakesizeGame = () => {
   const canvasRef = useRef(null);
   const gameLoopRef = useRef(null);
   const lastUpdateRef = useRef(Date.now());
+
+  // Auto-fill player name from Farcaster
+  useEffect(() => {
+    if (context?.user) {
+      const username = context.user.username || context.user.displayName || 'Player';
+      setPlayerName(username);
+      console.log('Farcaster user detected:', username);
+    }
+  }, [context]);
 
   const generateFood = useCallback(() => {
     const newFood = [];
@@ -472,6 +508,15 @@ const SnakesizeGame = () => {
     });
   });
 
+  // Show loading until SDK is ready
+  if (!isSDKLoaded) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-white text-2xl">Loading Snakesize.io...</div>
+      </div>
+    );
+  }
+
   if (gameState === 'menu') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
@@ -480,6 +525,12 @@ const SnakesizeGame = () => {
             Snakesize.io
           </h1>
           <p className="text-center text-gray-400 mb-6">Eat. Grow. Dominate.</p>
+          
+          {context && (
+            <div className="mb-4 text-center text-green-400 text-sm">
+              🎮 Playing via Farcaster Mini App
+            </div>
+          )}
           
           <div className="mb-6">
             <label className="block text-gray-300 mb-2">Enter your name:</label>
