@@ -5,7 +5,7 @@
         "signature": "MHgxMGQwZGU4ZGYwZDUwZTdmMGIxN2YxMTU2NDI1MjRmZTY0MTUyZGU4ZGU1MWU0MThiYjU4ZjVmZmQxYjRjNDBiNGVlZTRhNDcwNmVmNjhlMzQ0ZGQ5MDBkYmQyMmNlMmVlZGY5ZGQ0N2JlNWRmNzMwYzUxNjE4OWVjZDJjY2Y0MDFj"
     },
     "baseBuilder": {
-        "ownerAddress": "0x..."
+        "ownerAddress": "0xD588F7062dBc79433a85432E3BAC394ee74DCBE2"
     },
     "miniapp": {
         "version": "1",
@@ -13,7 +13,7 @@
         "homeUrl": "https://snakesize-farcaster.vercel.app",
         "iconUrl": "https://snakesize-farcaster.vercel.app/icon.png",
         "splashImageUrl": "https://snakesize-farcaster.vercel.app/splash.png",
-        "splashBackgroundColor": "#000000",
+        "splashBackgroundColor": "#9D00FF",
         "subtitle": "Compare your Farcaster followers",
         "description": "See how your Farcaster follower count stacks up against others in the community with this interactive size comparison game.",
         "screenshotUrls": [
